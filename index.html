@@ -338,7 +338,7 @@ function horns(){for(const sd of[-1,1]){x.save();x.scale(sd,1);
 function drawE(e,s){
  x.save();x.translate(e.x+7,e.y+8);x.scale(e.dir*(s||1),s||1);
  const col=e.angry?'#ff5a4d':e.t=='f'?'#3fd6c4':e.t=='s'?'#ff9f43':'#8b6cff',st=e.on?Math.sin(frame*.4)*1.5:0;
- if(e.t=='s')horns();
+ if(e.t=='s'){x.fillStyle='#fff4e8';x.beginPath();x.moveTo(-5,-5);x.lineTo(-4,-11);x.lineTo(-1,-6);x.moveTo(2,-6);x.lineTo(5,-11);x.lineTo(6,-4);x.fill()}
  else if(e.t!='f'){x.strokeStyle='#1b0f2e';x.lineWidth=1;x.beginPath();x.moveTo(0,-7);x.lineTo(1,-11);x.stroke();x.fillStyle='#ffd84d';x.beginPath();x.arc(1,-11,1.8,0,7);x.fill()}
  if(e.t=='f')wings(e.angry,e.trap?0:frame);
  else{x.fillStyle='#3a1d66';x.beginPath();x.ellipse(-3+st,7,2.6,1.6,0,0,7);x.ellipse(3-st,7,2.6,1.6,0,0,7);x.fill()}
@@ -358,12 +358,13 @@ function drawB(b){
 }
 function drawBoss(B){const cx=B.x+B.w/2,cy=B.y+B.h/2,sc=B.w/16;
  if(B.hurt&&frame%4<2)x.globalAlpha=.45;
+ if(B.k==2){x.save();x.translate(cx,cy);x.scale(B.dir*sc,sc);horns();x.restore()}
  drawE({x:cx-7,y:cy-8,dir:B.dir,t:B.k==2?'f':'w',angry:B.ph==2||B.k==2,on:B.on||B.k==2},sc);
  if(!B.trap&&B.cd<=45&&state=='play'){const k=1-B.cd/45;x.globalAlpha=1;x.strokeStyle=`rgba(255,90,77,${.3+k*.6})`;x.lineWidth=3;x.beginPath();x.arc(cx,cy,B.w*(.9-k*.25),0,7);x.stroke();
   if(frame%8<5){x.font='bold 22px "Do Hyeon",sans-serif';x.textAlign='center';x.fillStyle='#ff5a4d';x.fillText('!',cx,B.y-B.h*.35)}}
  const top=cy+8-7.5*sc-sc*8;
  if(B.k==1){x.fillStyle='#ffd84d';x.beginPath();x.moveTo(cx-12,top+12);x.lineTo(cx-12,top);x.lineTo(cx-6,top+6);x.lineTo(cx,top-3);x.lineTo(cx+6,top+6);x.lineTo(cx+12,top);x.lineTo(cx+12,top+12);x.fill();x.fillStyle='#ff4f7b';x.beginPath();x.arc(cx,top+7,2.2,0,7);x.fill()}
- else for(let i=-1;i<=1;i++){const h=10+Math.sin(frame*.4+i*2)*4;x.fillStyle=i?'#ff6a2b':'#ffd84d';x.beginPath();x.moveTo(cx+i*9-6,top+12);x.quadraticCurveTo(cx+i*9,top+12-h*2,cx+i*9+6,top+12);x.fill()}
+
  x.globalAlpha=1;
  if(B.trap){const r=B.w*.78;x.fillStyle=L.c[0]+'40';x.strokeStyle=frame%16<8?L.c[0]:'#fff';x.lineWidth=2.5;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();x.stroke();x.fillStyle='#ffffffcc';x.beginPath();x.ellipse(cx-r*.4,cy-r*.45,r*.22,r*.12,-.6,0,7);x.fill()}
 }
