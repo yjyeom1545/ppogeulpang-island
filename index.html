@@ -145,10 +145,10 @@ const LV=[
  {c:['#ff4fa3','#8c1f5a'],boss:2,s:[[21,5,10],[21,21,26],[17,13,18],[13,4,9],[13,22,27],[9,12,19]],e:[],mv:[[13,10,4,'h',8,.7],[5,4,4,'h',20,.8]]}
 ];
 const DF=[
- {n:'쉬움',d:'목숨 5개, 뽀구리가 느리고 거품에 오래 갇혀요',hp:.6,meteor:0,spd:.8,trap:600,lives:5,hurry:3600,shot:260,extra:0,chase:.012,jump:.025},
- {n:'보통',d:'목숨 3개, 기본 속도',hp:1,meteor:0,spd:1.05,trap:420,lives:3,hurry:2400,shot:170,extra:0,chase:.025,jump:.045},
- {n:'어려움',d:'목숨 3개, 한 마리씩 더 + 하늘에서 불덩이가 떨어져요',hp:1.3,meteor:300,spd:1.35,trap:300,lives:3,hurry:1800,shot:90,extra:1,chase:.04,jump:.07},
- {n:'지옥',d:'목숨 2개, 두 마리씩 더, 불덩이 비가 쏟아져요',hp:1.6,meteor:150,spd:1.65,trap:210,lives:2,hurry:1200,shot:75,extra:2,chase:.06,jump:.1}
+ {n:'쉬움',d:'뽀구리가 느리고 거품에 오래 갇혀요',hp:.6,meteor:0,spd:.8,trap:600,lives:3,hurry:3600,shot:260,extra:0,chase:.012,jump:.025},
+ {n:'보통',d:'기본 속도',hp:1,meteor:0,spd:1,trap:420,lives:3,hurry:2400,shot:170,extra:0,chase:.025,jump:.045},
+ {n:'어려움',d:'한 마리씩 더 + 10초마다 하늘 불덩이',hp:1.2,meteor:600,spd:1.2,trap:300,lives:3,hurry:1800,shot:90,extra:1,chase:.04,jump:.07},
+ {n:'지옥',d:'두 마리씩 더 + 5초마다 하늘 불덩이',hp:1.4,meteor:300,spd:1.5,trap:210,lives:3,hurry:1200,shot:75,extra:2,chase:.06,jump:.1}
 ];
 let mp=[],boss=null,fever=0,diff=1,D,sh=[],g,L,lvN=0,spd=1,p,en=[],bu=[],fr=[],fx=[],tx=[],score=0,hi=0,lives=3,state='title',timer=0,frame=0,clearT=0,lvT=0,hurry=false,muted=false,tiles;
 let nick='',hiN='';try{nick=localStorage.getItem('bbp-nick')||'';diff=+(localStorage.getItem('bbp-diff')??1)||0}catch(e){}
@@ -162,7 +162,7 @@ const SND={jump:[520,780,.1,'square'],shot:[900,450,.08,'triangle'],trap:[300,90
 function sfx(n){if(muted)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const d=SND[n],t=ac.currentTime,o=ac.createOscillator(),v=ac.createGain();o.type=d[3];o.frequency.setValueAtTime(d[0],t);o.frequency.exponentialRampToValueAtTime(d[1],t+d[2]);v.gain.setValueAtTime(.06,t);v.gain.exponentialRampToValueAtTime(.001,t+d[2]);o.connect(v).connect(ac.destination);o.start(t);o.stop(t+d[2])}catch(e){}}
 const solid=(c,r)=>r<0||r>=R||c<0||c>=C?0:g[r][c];
 function load(n){
- L=LV[n];D=DF[diff];spd=D.spd*(1+n*.035);
+ L=LV[n];D=DF[diff];spd=D.spd*(1+n*.022);
  g=[];for(let r=0;r<R;r++){g.push([]);for(let c=0;c<C;c++){let s=c<2||c>=C-2?2:0;if(!s&&(r==0||r==R-1)&&(c<13||c>18))s=1;g[r].push(s)}}
  for(const[r,a,b]of L.s)for(let c=a;c<=b;c++)g[r][c]=1;
  const list=L.e.slice();for(let i=0;i<D.extra*2&&i<L.e.length;i+=2){const[c,r,t]=L.e[i];list.push([c+(c<16?3:-3),r,t])}
