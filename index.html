@@ -258,7 +258,7 @@ function update(){
  bu=bu.filter(b=>!b.gone);
  // enemies
  for(const e of en){if(e.dead||e.trap)continue;
-  const sp=(e.angry?1.55:.95)*spd;
+  const sp=(e.angry?1.15:.7)*spd;
   if(e.t=='f'){e.x+=e.dir*sp*.9;e.y+=e.vy*sp*.75;
    if(e.x<2*T){e.x=2*T;e.dir=1}if(e.x>(C-2)*T-14){e.x=(C-2)*T-14;e.dir=-1}
    if(e.y<T+2)e.vy=1;if(e.y>CH-2*T-14)e.vy=-1;
