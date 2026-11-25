@@ -382,7 +382,7 @@ function draw(){
  if(state!='over')drawP();
  for(const f of fx){x.strokeStyle=`rgba(255,255,255,${1-f.t/12})`;x.lineWidth=2;x.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4,r1=6+f.t,r2=10+f.t*1.4;x.moveTo(f.x+Math.cos(a)*r1,f.y+Math.sin(a)*r1);x.lineTo(f.x+Math.cos(a)*r2,f.y+Math.sin(a)*r2)}x.stroke()}
  x.textAlign='center';
- for(const t of tx){if(t.big){x.font='36px "Do Hyeon",sans-serif';x.fillStyle=frame%20<10?'#ff5a4d':'#ffd84d';x.fillText(t.s,t.x,t.y)}else{x.font='8px "Press Start 2P",monospace';x.fillStyle='#ffd84d';x.fillText(t.s,t.x,t.y-t.t*.5)}}
+ for(const t of tx){if(t.big){x.font='36px "Do Hyeon",sans-serif';const tw=x.measureText(t.s).width;if(tw>CW-6*T)x.font=Math.floor(36*(CW-6*T)/tw)+'px "Do Hyeon",sans-serif';x.fillStyle=frame%20<10?'#ff5a4d':'#ffd84d';x.fillText(t.s,t.x,t.y)}else{x.font='8px "Press Start 2P",monospace';x.fillStyle='#ffd84d';x.fillText(t.s,t.x,t.y-t.t*.5)}}
  if(boss&&!boss.dead){const w=200,X=CW/2-w/2;x.fillStyle='#000a';x.fillRect(X-2,T+2,w+4,10);x.fillStyle=boss.ph==2?'#ff5a4d':'#ffd84d';x.fillRect(X,T+4,w*Math.max(0,boss.hp)/boss.max,6);x.font='14px "Do Hyeon",sans-serif';x.fillStyle='#fff4e8';x.fillText(boss.trap?'지금 터뜨려!':boss.name,CW/2,T+26)}
  if(fever){x.font='12px "Press Start 2P",monospace';x.fillStyle=`hsl(${frame*8%360} 90% 65%)`;x.fillText('FEVER x2',CW/2,CH-2*T-6);x.fillStyle='#fff';x.fillRect(CW/2-60,CH-2*T,120*fever/300,3)}
  if(state=='intro'){const bt=L.boss?'BOSS!':'ROUND '+(lvN+1);x.font='22px "Press Start 2P",monospace';x.fillStyle='#000a';x.fillText(bt,CW/2+3,CH/2+3);x.fillStyle=L.boss?'#ff5a4d':'#ffd84d';x.fillText(bt,CW/2,CH/2);x.font='20px "Do Hyeon",sans-serif';x.fillStyle='#fff4e8';x.fillText(L.boss?boss.name+' 등장!':'준비!',CW/2,CH/2+32)}
