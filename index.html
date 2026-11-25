@@ -321,16 +321,13 @@ function drawP(){
  if(p.blow){x.fillStyle='#7a1f3a';x.beginPath();x.arc(7.5,1,1.8,0,7);x.fill()}
  x.restore();
 }
-function wings(fire,fr){const fl=Math.sin(fr*.4),Tp=[[18,-8],[16,-2],[12.5,2],[8.5,4.2],[3.5,4.5]];
- const fill=fire?['#fff3e0','#ffb067','#ff6a2b']:['#ffffff','#d7f1ff','#8fd0ff'],ln=fire?'#8f2a17':'#3f6f99';
- for(const sd of[-1,1]){x.save();x.translate(sd*5,-1);x.scale(sd,1);x.rotate(-.12-fl*.42);
-  x.beginPath();x.moveTo(0,-2.5);x.quadraticCurveTo(7,-11,Tp[0][0],Tp[0][1]);
-  for(let i=0;i<Tp.length-1;i++){const[a1,b1]=Tp[i],[a2,b2]=Tp[i+1];x.quadraticCurveTo((a1+a2)/2+1.6,(b1+b2)/2+2.2,a2,b2)}
-  x.quadraticCurveTo(0,4,0,-2.5);x.closePath();
-  const g=x.createLinearGradient(0,0,18,0);g.addColorStop(0,fill[0]);g.addColorStop(.55,fill[1]);g.addColorStop(1,fill[2]);
-  x.fillStyle=g;x.fill();x.strokeStyle=ln;x.lineWidth=.7;x.stroke();
-  x.strokeStyle=ln+'88';x.lineWidth=.45;x.beginPath();for(const[a1,b1]of Tp.slice(1)){x.moveTo(2,-.5);x.lineTo(a1*.82,b1*.82-.6)}x.stroke();
-  x.strokeStyle='#ffffffaa';x.lineWidth=.8;x.beginPath();x.moveTo(1,-2.6);x.quadraticCurveTo(7,-9.6,16,-7.4);x.stroke();
+function wings(fire,fr){const fl=Math.sin(fr*.4),ln=fire?'#7a2414':'#1b0f2e';
+ for(const sd of[-1,1]){x.save();x.translate(sd*6.5,-1);x.scale(sd,1);x.rotate(.05-fl*.28);
+  x.beginPath();x.moveTo(0,2);x.bezierCurveTo(-1.5,-7,5,-12.5,12,-13);
+  x.quadraticCurveTo(15,-9.5,11.5,-7.5);x.quadraticCurveTo(15,-4,11,-2);x.quadraticCurveTo(13.5,2.5,8,3.5);
+  x.bezierCurveTo(6,6.5,1.5,6.5,0,2);x.closePath();
+  x.fillStyle=fire?'#fff2e2':'#ffffff';x.fill();x.strokeStyle=ln;x.lineWidth=1;x.lineJoin='round';x.stroke();
+  x.beginPath();x.arc(4,2.4,2.3,-.3,Math.PI*1.5,false);x.stroke();
   x.restore()}}
 function drawE(e,s){
  x.save();x.translate(e.x+7,e.y+8);x.scale(e.dir*(s||1),s||1);
