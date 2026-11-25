@@ -414,24 +414,38 @@ function fit(){const w=scrEl.clientWidth,h=scrEl.clientHeight;if(!w||!h)return;c
 try{new ResizeObserver(fit).observe(scrEl)}catch(e){addEventListener('resize',fit)}fit();
 let openM=null;
 function closeM(){if(!openM)return;openM.hidden=true;openM=null}
-document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{closeM();openM=$(b.dataset.open);openM.hidden=false;if(state=='play')state='pause';const c=openM.querySelector('.x');if(c)c.focus()}));
+document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{closeM();openM=$(b.dataset.open);openM.hidden=false;if(state=='play')state='pause';if(b.dataset.open=='rankp'&&sbMode)sbLoad(rkD);const c=openM.querySelector('.x');if(c)c.focus()}));
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target==m||e.target.closest('[data-close]'))closeM()}));
 // ranking
-let rdb=null,uid=null,ranks=[],rkD=diff,rkOk=false;
+let rdb=null,uid=null,ranks=[],rkD=diff,rkOk=false,sbMode=false;const sbRows={};
+const SBU='https://kutkntpmvbcigidwjtmz.supabase.co/rest/v1/bbp_scores',SBK='sb_publishable_IjJqsOQM4JysT4PK6dU0GA_5wt-TIr4';
+async function sbLoad(d){
+ try{const r=await fetch(`${SBU}?select=name,score,round,cleared&diff=eq.${d}&order=score.desc&limit=300`,{headers:{apikey:SBK}});
+  if(!r.ok)throw 0;const js=await r.json(),seen=new Set(),out=[];
+  for(const v of js){const n=String(v.name||'').slice(0,10);if(!n||seen.has(n))continue;seen.add(n);out.push({n,s:Math.max(0,Math.floor(+v.score||0)),r:Math.floor(+v.round||0),c:!!v.cleared})}
+  sbRows[d]=out;if(d==rkD)renderRank()}
+ catch(e){if(d==rkD){$('rks').textContent='랭킹을 불러오지 못했어요. 인터넷 연결을 확인해 주세요';$('rkl').innerHTML=''}}
+}
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rt=document.querySelector('.rktabs');
-function rows(d){return ranks.map(r=>{const b=r.best&&r.best[d];return{me:r.id==uid,n:String(r.name||'익명').slice(0,10),s:b?Math.max(0,Math.floor(+b.s||0)):0,r:b?Math.floor(+b.r||0):0,c:b&&b.c}}).filter(r=>r.s>0).sort((a,b)=>b.s-a.s)}
+function rows(d){if(sbMode)return(sbRows[d]||[]).map(r=>Object.assign({},r,{me:r.n==nick}));return ranks.map(r=>{const b=r.best&&r.best[d];return{me:r.id==uid,n:String(r.name||'익명').slice(0,10),s:b?Math.max(0,Math.floor(+b.s||0)):0,r:b?Math.floor(+b.r||0):0,c:b&&b.c}}).filter(r=>r.s>0).sort((a,b)=>b.s-a.s)}
 function renderRank(){
  rt.innerHTML=DF.map((d,i)=>`<button role="tab" aria-selected="${i==rkD}" data-i="${i}">${d.n}</button>`).join('');
  if(!rkOk)return;
+ if(sbMode&&!sbRows[rkD]){$('rks').textContent='랭킹 불러오는 중…';$('rkl').innerHTML='';$('rkme').textContent='';return}
  const all=rows(rkD),top=all.slice(0,10);
  $('rkl').innerHTML=top.map((r,i)=>`<li class="${r.me?'me':''}"><span class="n">${i+1}</span><span class="nm">${esc(r.n)}</span><span class="r">${r.c?'올클리어':'R'+r.r}</span><span class="s">${r.s}</span></li>`).join('');
  $('rks').textContent=top.length?'':'아직 기록이 없어요. 첫 번째 주인공이 되어 보세요!';
  const mi=all.findIndex(r=>r.me);$('rkme').textContent=mi>=10?`내 순위: ${mi+1}위 · ${all[mi].s}점`:'';
 }
-rt.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rkD=+b.dataset.i;renderRank()});
+rt.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rkD=+b.dataset.i;renderRank();if(sbMode)sbLoad(rkD)});
 async function submitRank(clear){
  const m=$('rkmsg');m.textContent='';
+ if(sbMode){if(score<=0)return;m.textContent='랭킹 등록 중…';
+  try{const r=await fetch(SBU,{method:'POST',headers:{apikey:SBK,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name:nick.slice(0,10),score:Math.min(score,2000000),diff,round:Math.min(10,lvN+1),cleared:!!clear})});
+   if(!r.ok)throw 0;await sbLoad(diff);const pos=rows(diff).findIndex(r=>r.me&&r.s==score)+1;
+   m.textContent=pos?`🏆 ${DF[diff].n} 랭킹 ${pos}위로 등록됐어요!`:`기록을 등록했어요 (내 최고 기록은 그대로예요)`;rkD=diff;renderRank()}
+  catch(e){m.textContent='랭킹 등록에 실패했어요. 인터넷 연결을 확인해 주세요'}return}
  if(!rdb||!uid||score<=0){if(rkOk)m.textContent='랭킹에 등록할 수 없는 환경이에요';return}
  const mine=ranks.find(r=>r.id==uid)||{},best=Object.assign({},mine.best||{}),cur=best[diff];
  const better=!cur||score>(+cur.s||0);
@@ -447,7 +461,7 @@ async function submitRank(clear){
 renderRank();
 (async()=>{
  const st=$('rks');
- if(!window.claude||!claude.use){st.textContent='이 화면에서는 랭킹을 불러올 수 없어요';return}
+ if(!window.claude||!claude.use){sbMode=true;rkOk=true;renderRank();sbLoad(rkD);return}
  let dbx=null,us=null;try{[dbx,us]=await Promise.all([claude.use('db'),claude.use('user')])}catch(e){}
  if(!dbx){st.textContent='로그인하면 랭킹을 볼 수 있어요';return}
  rdb=dbx;try{uid=us?await us.id():null}catch(e){}
