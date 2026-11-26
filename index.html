@@ -366,6 +366,14 @@ function drawBoss(B){const cx=B.x+B.w/2,cy=B.y+B.h/2,sc=B.w/16;
  if(B.k==1){x.fillStyle='#ffd84d';x.beginPath();x.moveTo(cx-12,top+12);x.lineTo(cx-12,top);x.lineTo(cx-6,top+6);x.lineTo(cx,top-3);x.lineTo(cx+6,top+6);x.lineTo(cx+12,top);x.lineTo(cx+12,top+12);x.fill();x.fillStyle='#ff4f7b';x.beginPath();x.arc(cx,top+7,2.2,0,7);x.fill()}
 
  x.globalAlpha=1;
+ if(!B.trap){B.hpd=B.hpd==null?B.hp:B.hpd+(Math.max(0,B.hp)-B.hpd)*.07;
+  const w=B.w+18,X=cx-w/2;let Y=B.y-30;if(Y<4)Y=B.y+B.h+8;const f=Math.max(0,B.hp)/B.max,d=Math.max(0,B.hpd)/B.max;
+  x.fillStyle='#000c';x.fillRect(X-2,Y-2,w+4,9);
+  x.fillStyle='#fff';x.fillRect(X+w*f,Y,w*(d-f),5);
+  x.fillStyle=B.ph==2?'#ff5a4d':f>.75?'#5ce1c6':'#ffd84d';x.fillRect(X,Y,w*f,5);
+  x.fillStyle='#ffffff55';x.fillRect(X,Y,w*f,1.5);
+  x.fillStyle='#ffffff40';for(let i=1;i<4;i++)x.fillRect(X+w*i/4,Y,1,5);
+  x.font='7px "Press Start 2P",monospace';x.textAlign='center';x.fillStyle='#fff4e8';x.fillText(Math.max(0,B.hp)+'/'+B.max,cx,Y-4)}
  if(B.trap){const r=B.w*.78;x.fillStyle=L.c[0]+'40';x.strokeStyle=frame%16<8?L.c[0]:'#fff';x.lineWidth=2.5;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();x.stroke();x.fillStyle='#ffffffcc';x.beginPath();x.ellipse(cx-r*.4,cy-r*.45,r*.22,r*.12,-.6,0,7);x.fill()}
 }
 function drawF(f){
